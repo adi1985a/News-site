@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NewsPortal - Latest World and National News</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%);
+        }
+        
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .category-tag {
+            transition: all 0.3s ease;
+        }
+        
+        .category-tag:hover {
+            transform: scale(1.05);
+        }
+        
+        .dropdown-menu {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .article-image {
+            transition: transform 0.5s ease;
+        }
+        
+        .article-card:hover .article-image {
+            transform: scale(1.03);
+        }
+        
+        .floating {
+            animation: floating 6s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, #4f46e5, #a855f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .bg-glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+        
+        .hover-scale:hover {
+            transform: scale(1.03);
+        }
+        
+        .text-shadow {
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .bg-pattern {
+            background-image: radial-gradient(rgba(124, 58, 237, 0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        .animate-marquee {
+            display: inline-block;
+            animation: marquee 20s linear infinite;
+            padding-left: 100%;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Top Bar -->
+    <div class="bg-indigo-900 text-white py-2 px-4 text-sm">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex space-x-4">
+                <span><i class="fas fa-calendar-alt mr-1"></i> <span id="current-date"></span></span>
+                <span><i class="fas fa-clock mr-1"></i> <span id="current-time"></span></span>
+            </div>
+            <div class="flex space-x-4">
+                <a href="#" class="hover:text-indigo-200"><i class="fas fa-sign-in-alt mr-1"></i> Login</a>
+                <a href="#" class="hover:text-indigo-200"><i class="fas fa-user-plus mr-1"></i> Register</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <div class="bg-indigo-600 text-white p-2 rounded-lg mr-3 animate__animated animate__pulse">
+                        <i class="fas fa-newspaper text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold gradient-text">News<span>Portal</span></h1>
+                        <p class="text-sm text-gray-600">Latest world and national news</p>
+                    </div>
+                </div>
+                
+                <div class="relative w-full md:w-1/3">
+                    <input type="text" placeholder="Search for news..." class="w-full px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <button class="absolute right-0 top-0 h-full px-4 text-gray-500 hover:text-indigo-600">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-indigo-800 text-white sticky top-0 z-40 shadow-lg">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row">
+                <a href="index.html" class="py-3 px-4 hover:bg-indigo-700 transition duration-300 flex items-center">
+                    <i class="fas fa-home mr-2"></i> Home
+                </a>
+                
+                <div class="dropdown relative">
+                    <button class="py-3 px-4 hover:bg-indigo-700 transition duration-300 flex items-center">
+                        <i class="fas fa-globe-europe mr-2"></i> World <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                    </button>
+                    <div class="dropdown-menu absolute left-0 mt-0 w-48 bg-white text-gray-800 shadow-lg rounded-b-lg z-50">
+                        <a href="world-politics.html" class="block px-4 py-2 hover:bg-indigo-50 border-b border-gray-100">Politics</a>
+                        <a href="world-economy.html" class="block px-4 py-2 hover:bg-indigo-50 border-b border-gray-100">Economy</a>
+                        <a href="world-science.html" class="block px-4 py-2 hover:bg-indigo-50 border-b border-gray-100">Science</a>
+                        <a href="world-health.html" class="block px-4 py-2 hover:bg-indigo-50">Health</a>
+                    </div>
+                </div>
+                
+                <div class="dropdown relative">
+                    <button class="py-3 px-4 hover:bg-indigo-700 transition duration-300 flex items-center">
+                        <i class="fas fa-flag mr-2"></i> National <i class="fas fa-chevron-down ml-2 text-xs"></i>
+                    </button>
+                    <div class="dropdown-menu absolute left-0 mt-0 w-48 bg-white text-gray-800 shadow-lg rounded-b-lg z-50">
+                        <a href="national-parliament.html" class="block px-4 py-2 hover:bg-indigo-50 border-b border-gray-100">Parliament</a>
+                        <a href="national-local.html" class="block px-4 py-2 hover:bg-indigo-50 border-b border-gray-100">Local Government</a>
+                        <a href="national-culture.html" class="block px-4 py-2 hover:bg-indigo-50 border-b border-gray-100">Culture</a>
+                        <a href="national-sports.html" class="block px-4 py-2 hover:bg-indigo-50">Sports</a>
+                    </div>
+                </div>
+                
+                <a href="articles.html" class="py-3 px-4 hover:bg-indigo-700 transition duration-300 flex items-center">
+                    <i class="fas fa-newspaper mr-2"></i> Articles
+                </a>
+                
+                <a href="blogs.html" class="py-3 px-4 hover:bg-indigo-700 transition duration-300 flex items-center">
+                    <i class="fas fa-blog mr-2"></i> Blogs
+                </a>
+                
+                <a href="galleries.html" class="py-3 px-4 hover:bg-indigo-700 transition duration-300 flex items-center">
+                    <i class="fas fa-images mr-2"></i> Galleries
+                </a>
+                
+                <a href="resources.html" class="py-3 px-4 hover:bg-indigo-700 transition duration-300 flex items-center">
+                    <i class="fas fa-file-alt mr-2"></i> Resources
+                </a>
+                
+                <a href="contact.html" class="py-3 px-4 hover:bg-indigo-700 transition duration-300 flex items-center">
+                    <i class="fas fa-envelope mr-2"></i> Contact
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-8 md:mb-0 animate__animated animate__fadeInLeft">
+                    <span class="bg-indigo-600 text-white px-3 py-1 rounded-full text-sm font-medium">LATEST</span>
+                    <h2 class="text-4xl font-bold mt-4 mb-4 text-shadow">Breakthrough in artificial intelligence research</h2>
+                    <p class="text-lg mb-6">MIT scientists have developed a new algorithm that could revolutionize how machines learn from limited data.</p>
+                    <div class="flex space-x-3">
+                        <a href="article-ai.html" class="bg-white text-indigo-800 px-6 py-2 rounded-full font-medium hover:bg-indigo-100 transition duration-300 hover-scale">
+                            Read more
+                        </a>
+                        <a href="#" class="border border-white text-white px-6 py-2 rounded-full font-medium hover:bg-white hover:text-indigo-800 transition duration-300 hover-scale">
+                            Watch video
+                        </a>
+                        </div>
+                </div>
+                <div class="md:w-1/2 animate__animated animate__fadeInRight">
+                    <div class="relative floating">
+                        <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1200&q=80" alt="AI Research" class="w-full rounded-xl shadow-2xl">
+                        <div class="absolute -bottom-4 -right-4 bg-white p-2 rounded-lg shadow-lg">
+                            <div class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-xs font-bold">LIVE</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Breaking News Ticker -->
+    <div class="bg-pink-600 text-white py-2 px-4">
+        <div class="container mx-auto flex items-center overflow-hidden">
+            <span class="font-bold mr-4 whitespace-nowrap flex-shrink-0">LIVE:</span>
+            <div class="overflow-hidden">
+                <div class="inline-block whitespace-nowrap animate-marquee">
+                    <span class="mx-4">• President met with EU leaders in Brussels</span>
+                    <span class="mx-4">• Stock market rose by 1.5% today</span>
+                    <span class="mx-4">• Banking system failure - issues with transfers</span>
+                    <span class="mx-4">• New traffic restrictions in city center</span>
+                    <span class="mx-4">• Breakthrough in Alzheimer's treatment</span>
+                    <span class="mx-4">• Record results for local startups</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Left Column - Main News -->
+            <div class="lg:w-2/3">
+                <h2 class="text-2xl font-bold mb-6 pb-2 border-b-2 border-indigo-500 text-indigo-900">Top Stories</h2>
+                
+                <div class="grid md:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white rounded-xl overflow-hidden shadow-md news-card transition duration-300 hover-scale">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1606326608606-aa0b629e6554?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Politics" class="w-full h-48 object-cover">
+                            <div class="absolute top-2 left-2 bg-indigo-600 text-white text-xs px-2 py-1 rounded">POLITICS</div>
+                        </div>
+                        <div class="p-4">
+                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded category-tag">Politics</span>
+                            <h3 class="text-xl font-semibold mt-2 mb-2">New coalition agreement signed</h3>
+                            <p class="text-gray-600 text-sm">Leaders of three political parties signed an agreement today that should ensure government stability for the coming years.</p>
+                            <div class="flex items-center mt-4 text-sm text-gray-500">
+                                <i class="fas fa-user mr-1"></i> John Smith
+                                <i class="fas fa-clock ml-4 mr-1"></i> 2 hours ago
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl overflow-hidden shadow-md news-card transition duration-300 hover-scale">
+                        <div class="relative">
+                            <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Economy" class="w-full h-48 object-cover">
+                            <div class="absolute top-2 left-2 bg-green-600 text-white text-xs px-2 py-1 rounded">ECONOMY</div>
+                        </div>
+                        <div class="p-4">
+                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded category-tag">Economy</span>
+                            <h3 class="text-xl font-semibold mt-2 mb-2">Inflation drops below 10%</h3>
+                            <p class="text-gray-600 text-sm">According to the latest data, inflation in June was 9.6%, marking the first significant drop in over a year.</p>
+                            <div class="flex items-center mt-4 text-sm text-gray-500">
+                                <i class="fas fa-user mr-1"></i> Anna Johnson
+                                <i class="fas fa-clock ml-4 mr-1"></i> 4 hours ago
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl overflow-hidden shadow-md mb-8 hover-scale">
+                    <div class="md:flex">
+                        <div class="md:w-1/3">
+                            <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Technology" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-6 md:w-2/3">
+                            <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded category-tag">Technology</span>
+                            <h3 class="text-2xl font-bold mt-2 mb-3">New smartphone with revolutionary display</h3>
+                            <p class="text-gray-700 mb-4">A tech company has unveiled a prototype phone with a screen that can roll and stretch. The device is expected to hit the market next year.</p>
+                            <div class="flex items-center text-sm text-gray-500">
+                                <i class="fas fa-user mr-1"></i> Mark Wilson
+                                <i class="fas fa-clock ml-4 mr-1"></i> 6 hours ago
+                                <i class="fas fa-comment ml-4 mr-1"></i> 24 comments
+                            </div>
+                            <a href="article-technology.html" class="mt-4 inline-block text-indigo-600 hover:text-indigo-800 font-medium">Read more →</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <h2 class="text-2xl font-bold mb-6 pb-2 border-b-2 border-indigo-500 text-indigo-900">Featured Articles</h2>
+                
+                <div class="grid md:grid-cols-3 gap-6 mb-8">
+                    <div class="article-card bg-white rounded-xl overflow-hidden shadow-md transition duration-300 hover-scale">
+                        <div class="overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Nature" class="w-full h-40 object-cover article-image">
+                        </div>
+                        <div class="p-4">
+                            <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded category-tag">Nature</span>
+                            <h3 class="text-lg font-semibold mt-2 mb-2">How climate change affects our forests</h3>
+                            <div class="flex items-center mt-3 text-sm text-gray-500">
+                                <i class="fas fa-clock mr-1"></i> Yesterday
+                            </div>
+                            <a href="article-climate.html" class="mt-2 inline-block text-indigo-600 hover:text-indigo-800 text-sm font-medium">Read more →</a>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card bg-white rounded-xl overflow-hidden shadow-md transition duration-300 hover-scale">
+                        <div class="overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Science" class="w-full h-40 object-cover article-image">
+                        </div>
+                        <div class="p-4">
+                            <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded category-tag">Science</span>
+                            <h3 class="text-lg font-semibold mt-2 mb-2">New discoveries in quantum physics</h3>
+                            <div class="flex items-center mt-3 text-sm text-gray-500">
+                                <i class="fas fa-clock mr-1"></i> 2 days ago
+                            </div>
+                            <a href="article-science.html" class="mt-2 inline-block text-indigo-600 hover:text-indigo-800 text-sm font-medium">Read more →</a>
+                        </div>
+                    </div>
+                    
+                    <div class="article-card bg-white rounded-xl overflow-hidden shadow-md transition duration-300 hover-scale">
+                        <div class="overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Health" class="w-full h-40 object-cover article-image">
+                        </div>
+                        <div class="p-4">
+                            <span class="bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded category-tag">Health</span>
+                            <h3 class="text-lg font-semibold mt-2 mb-2">Breakthrough in neurodegenerative diseases</h3>
+                            <div class="flex items-center mt-3 text-sm text-gray-500">
+                                <i class="fas fa-clock mr-1"></i> 3 days ago
+                            </div>
+                            <a href="article-health.html" class="mt-2 inline-block text-indigo-600 hover:text-indigo-800 text-sm font-medium">Read more →</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Video Section -->
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-6 pb-2 border-b-2 border-indigo-500 text-indigo-900">Video</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-white rounded-xl overflow-hidden shadow-md hover-scale">
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1574717024453-354f3981f459?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Video" class="w-full h-48 object-cover">
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="bg-white bg-opacity-80 rounded-full p-4 hover:bg-opacity-100 transition duration-300">
+                                        <i class="fas fa-play text-indigo-600 text-2xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold">Interview with Health Minister about healthcare reform</h3>
+                                <div class="flex items-center mt-2 text-sm text-gray-500">
+                                    <i class="fas fa-clock mr-1"></i> 5 hours ago
+                                    <i class="fas fa-eye ml-4 mr-1"></i> 12.4k views
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white rounded-xl overflow-hidden shadow-md hover-scale">
+                            <div class="relative">
+                                <img src="https://images.unsplash.com/photo-1551818255-e6e10975bc17?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Video" class="w-full h-48 object-cover">
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="bg-white bg-opacity-80 rounded-full p-4 hover:bg-opacity-100 transition duration-300">
+                                        <i class="fas fa-play text-indigo-600 text-2xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="font-semibold">New technologies in local schools</h3>
+                                <div class="flex items-center mt-2 text-sm text-gray-500">
+                                    <i class="fas fa-clock mr-1"></i> 1 day ago
+                                    <i class="fas fa-eye ml-4 mr-1"></i> 8.7k views
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column - Sidebar -->
+            <div class="lg:w-1/3">
+                <!-- Weather Widget -->
+                <div class="bg-white rounded-xl shadow-md p-4 mb-6 hover-scale">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-lg text-indigo-900">Weather</h3>
+                        <div class="relative">
+                            <select class="appearance-none bg-indigo-50 text-indigo-800 text-sm px-3 py-1 pr-8 rounded-full focus:outline-none">
+                                <option>Warsaw</option>
+                                <option>Krakow</option>
+                                <option>Wroclaw</option>
+                                <option>Gdansk</option>
+                                <option>Poznan</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                                <i class="fas fa-chevron-down text-xs text-indigo-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <i class="fas fa-sun text-yellow-400 text-4xl mr-3"></i>
+                            <div>
+                                <div class="text-3xl font-bold">75°F</div>
+                                <div class="text-sm text-gray-600">Sunny</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-sm">Max: 79°F</div>
+                            <div class="text-sm">Min: 64°F</div>
+                            <div class="text-sm">Wind: 6 mph</div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-5 gap-2 mt-4 text-center">
+                        <div class="text-xs">
+                            <div>Mon</div>
+                            <i class="fas fa-cloud-sun text-gray-500 my-1"></i>
+                            <div>72°</div>
+                        </div>
+                        <div class="text-xs">
+                            <div>Tue</div>
+                            <i class="fas fa-sun text-yellow-400 my-1"></i>
+                            <div>77°</div>
+                        </div>
+                        <div class="text-xs">
+                            <div>Wed</div>
+                            <i class="fas fa-sun text-yellow-400 my-1"></i>
+                            <div>81°</div>
+                        </div>
+                        <div class="text-xs">
+                            <div>Thu</div>
+                            <i class="fas fa-cloud-rain text-blue-400 my-1"></i>
+                            <div>68°</div>
+                        </div>
+                        <div class="text-xs">
+                            <div>Fri</div>
+                            <i class="fas fa-cloud text-gray-400 my-1"></i>
+                            <div>70°</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Latest News -->
+                <div class="bg-white rounded-xl shadow-md p-4 mb-6 hover-scale">
+                    <h3 class="font-bold text-lg mb-4 pb-2 border-b border-gray-200 text-indigo-900">Latest News</h3>
+                    <div class="space-y-4">
+                        <div class="flex group">
+                            <div class="w-16 h-16 flex-shrink-0 overflow-hidden rounded-lg">
+                                <img src="https://images.unsplash.com/photo-1581092921461-39b2f1f30d0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="News" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-medium text-sm group-hover:text-indigo-600 cursor-pointer">New technologies in emergency medicine</h4>
+                                <div class="flex items-center text-xs text-gray-500 mt-1">
+                                    <i class="fas fa-clock mr-1"></i> 1 hour ago
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex group">
+                            <div class="w-16 h-16 flex-shrink-0 overflow-hidden rounded-lg">
+                                <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="News" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-medium text-sm group-hover:text-indigo-600 cursor-pointer">EU finance ministers meeting in Berlin</h4>
+                                <div class="flex items-center text-xs text-gray-500 mt-1">
+                                    <i class="fas fa-clock mr-1"></i> 3 hours ago
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex group">
+                            <div class="w-16 h-16 flex-shrink-0 overflow-hidden rounded-lg">
+                                <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="News" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-medium text-sm group-hover:text-indigo-600 cursor-pointer">Local scientists discover new insect species</h4>
+                                <div class="flex items-center text-xs text-gray-500 mt-1">
+                                    <i class="fas fa-clock mr-1"></i> 5 hours ago
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex group">
+                            <div class="w-16 h-16 flex-shrink-0 overflow-hidden rounded-lg">
+                                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=200&q=80" alt="News" class="w-full h-full object-cover group-houter:scale-110 transition duration-300">
+                            </div>
+                            <div class="ml-3">
+                                <h4 class="font-medium text-sm group-hover:text-indigo-600 cursor-pointer">New research on renewable energy</h4>
+                                <div class="flex items-center text-xs text-gray-500 mt-1">
+                                    <i class="fas fa-clock mr-1"></i> 7 hours ago
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="news.html" class="mt-4 block text-center text-indigo-600 hover:text-indigo-800 font-medium">View all →</a>
+                </div>
+                
+                <!-- Popular Tags -->
+                <div class="bg-white rounded-xl shadow-md p-4 mb-6 hover-scale">
+                    <h3 class="font-bold text-lg mb-4 pb-2 border-b border-gray-200 text-indigo-900">Popular Tags</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <a href="tag-politics.html" class="bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm px-3 py-1 rounded-full">#politics</a>
+                        <a href="tag-economy.html" class="bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm px-3 py-1 rounded-full">#economy</a>
+                        <a href="tag-technology.html" class="bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm px-3 py-1 rounded-full">#technology</a>
+                        <a href="tag-health.html" class="bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm px-3 py-1 rounded-full">#health</a>
+                        <a href="tag-science.html" class="bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm px-3 py-1 rounded-full">#science</a>
+                        <a href="tag-sports.html" class="bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm px-3 py-1 rounded-full">#sports</a>
+                        <a href="tag-culture.html" class="bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm px-3 py-1 rounded-full">#culture</a>
+                        <a href="tag-ecology.html" class="bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm px-3 py-1 rounded-full">#ecology</a>
+                    </div>
+                </div>
+                
+                <!-- Newsletter -->
+                <div class="bg-indigo-50 rounded-xl shadow-md p-4 border border-indigo-100 hover-scale">
+                    <div class="text-center mb-3">
+                        <i class="fas fa-envelope-open-text text-4xl text-indigo-600 mb-2"></i>
+                        <h3 class="font-bold text-lg text-indigo-900">Newsletter</h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-3 text-center">Subscribe to our newsletter to receive the most important news directly to your inbox.</p>
+                    <form>
+                        <input type="email" placeholder="Your email" class="w-full px-3 py-2 border border-gray-300 rounded mb-2 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded transition duration-300">
+                            Subscribe
+                        </button>
+                    </form>
+                    <p class="text-xs text-gray-500 mt-2 text-center">By subscribing you accept our <a href="#" class="text-indigo-600">terms</a>.</p>
+                </div>
+                
+                <!-- Poll -->
+                <div class="bg-white rounded-xl shadow-md p-4 mt-6 hover-scale">
+                    <h3 class="font-bold text-lg mb-4 text-indigo-900">Poll</h3>
+                    <p class="text-sm text-gray-600 mb-3">Do you think the government should increase healthcare spending?</p>
+                    <div class="space-y-2 mb-3">
+                        <div class="flex items-center">
+                            <input id="poll-1" type="radio" name="poll" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                            <label for="poll-1" class="ml-2 text-sm text-gray-700">Yes, definitely</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="poll-2" type="radio" name="poll" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                            <label for="poll-2" class="ml-2 text-sm text-gray-7 00">Probably yes</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="poll-3" type="radio" name="poll" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                            <label for="poll-3" class="ml-2 text-sm text-gray-700">No opinion</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="poll-4" type="radio" name="poll" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                            <label for="poll-4" class="ml-2 text-sm text-gray-700">Probably no</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="poll-5" type="radio" name="poll" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500">
+                            <label for="poll-5" class="ml-2 text-sm text-gray-700">Definitely no</label>
+                        </div>
+                    </div>
+                    <button class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded transition duration-300">
+                        Vote
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Photo Gallery Section -->
+    <section class="bg-gray-100 py-12 bg-pattern">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold mb-2 text-indigo-900">Photo Gallery</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">See our best photo reports from the most important events in the country and around the world</p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="relative group overflow-hidden rounded-xl">
+                    <img src="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80" alt="Gallery" class="w-full h-48 object-cover transform group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+                        <span class="text-white font-medium">Protests in Warsaw</span>
+                    </div>
+                    <a href="gallery-protests.html" class="absolute inset-0 z-10"></a>
+                </div>
+                <div class="relative group overflow-hidden rounded-xl">
+                    <img src="https://images.unsplash.com/photo-1505142468610-359e7d316be0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80" alt="Gallery" class="w-full h-48 object-cover transform group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-houter:opacity-100 transition duration-300">
+                        <span class="text-white font-medium">Science conference</span>
+                    </div>
+                    <a href="gallery-conference.html" class="absolute inset-0 z-10"></a>
+                </div>
+                <div class="relative group overflow-hidden rounded-xl">
+                    <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80" alt="Gallery" class="w-full h-48 object-cover transform group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+                        <span class="text-white font-medium">Family festival</span>
+                    </div>
+                    <a href="gallery-festival.html" class="absolute inset-0 z-10"></a>
+                </div>
+                <div class="relative group overflow-hidden rounded-xl">
+                    <img src="https://images.unsplash.com/photo-1501854140801-50d01698950b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=400&q=80" alt="Gallery" class="w-full h-48 object-cover transform group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+                        <span class="text-white font-medium">National park</span>
+                    </div>
+                    <a href="gallery-park.html" class="absolute inset-0 z-10"></a>
+                </div>
+            </div>
+            <div class="text-center mt-8">
+                <a href="galleries.html" class="inline-block bg-indigo-600 hover:bg-indigo-7 00 text-white px-6 py-2 rounded-full font-medium transition duration-300 hover-scale">
+                    View all galleries
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="py-12 bg-white">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold mb-2 text-indigo-900">Latest Blog Posts</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Insights and analysis from our team of experts</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover-scale">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Blog" class="w-full h-48 object-cover">
+                        <div class="absolute top-2 left-2 bg-indigo-600 text-white text-xs px-2 py-1 rounded">BLOG</div>
+                    </div>
+                    <div class="p-6">
+                        <span class="bg-purple-100 text-purple-800 text-xs font-medium px-2.5 py-0.5 rounded">Technology</span>
+                        <h3 class="text-xl font-semibold mt-2 mb-2">How the pandemic accelerated digital transformation</h3>
+                        <p class="text-gray-600 text-sm mb-4">The COVID-19 pandemic forced businesses worldwide to rapidly adopt digital solutions. Here's what we've learned from this transformation.</p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-user mr-1"></i> Sarah Johnson
+                            <i class="fas fa-clock ml-4 mr-1"></i> 1 week ago
+                        </div>
+                        <a href="blog-pandemic.html" class="mt-4 inline-block text-indigo-600 hover:text-indigo-800 font-medium">Read post →</a>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover-scale">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1454165804606-c3aa57cac21a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Blog" class="w-full h-48 object-cover">
+                        <div class="absolute top-2 left-2 bg-indigo-600 text-white text-xs px-2 py-1 rounded">BLOG</div>
+                    </div>
+                    <div class="p-6">
+                        <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">Finance</span>
+                        <h3 class="text-xl font-semibold mt-2 mb-2">The future of digital banking</h3>
+                        <p class="text-gray-600 text-sm mb-4">Digital banking is evolving at an unprecedented pace. We explore the technologies that will shape the financial sector in the coming years.</p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-user mr-1"></i> Michael Brown
+                            <i class="fas fa-clock ml-4 mr-1"></i> 2 weeks ago
+                        </div>
+                        <a href="blog-banking.html" class="mt-4 inline-block text-indigo-600 hover:text-indigo-800 font-medium">Read post →</a>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md overflow-hidden hover-scale">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="Blog" class="w-full h-48 object-cover">
+                        <div class="absolute top-2 left-2 bg-indigo-600 text-white text-xs px-2 py-1 rounded">BLOG</div>
+                    </div>
+                    <div class="p-6">
+                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">Health</span>
+                        <h3 class="text-xl font-semibold mt-2 mb-2">Mental health in the workplace</h3>
+                        <p class="text-gray-600 text-sm mb-4">As remote work becomes more common, companies need to rethink their approach to employee mental health and wellbeing.</p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-user mr-1"></i> Emily Wilson
+                            <i class="fas fa-clock ml-4 mr-1"></i> 3 weeks ago
+                        </div>
+                        <a href="blog-mental-health.html" class="mt-4 inline-block text-indigo-600 hover:text-indigo-800 font-medium">Read post →</a>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-8">
+                <a href="blogs.html" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-full font-medium transition duration-300 hover-scale">
+                    View all blog posts
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Resources Section -->
+    <section class="py-12 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold mb-2 text-indigo-900">Resources</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">Downloadable materials, reports and documents</p>
+            </div>
+            <div class="grid md:grid-cols-4 gap-6">
+                <div class="bg-white rounded-xl shadow-md p-6 text-center hover-scale">
+                    <div class="bg-indigo-100 text-indigo-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-file-pdf text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold mb-2">Economic Report 2023</h3>
+                    <p class="text-sm text-gray-600 mb-4">Comprehensive analysis of the national economy</p>
+                    <a href="#" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">Download PDF →</a>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 text-center hover-scale">
+                    <div class="bg-green-100 text-green-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-file-excel text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold mb-2">Healthcare Statistics</h3>
+                    <p class="text-sm text-gray-600 mb-4">Latest data on healthcare system performance</p>
+                    <a href="#" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">Download XLS →</a>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 text-center hover-scale">
+                    <div class="bg-blue-100 text-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-file-word text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold mb-2">Education White Paper</h3>
+                    <p class="text-sm text-gray-600 mb-4">Government proposals for education reform</p>
+                    <a href="#" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">Download DOC →</a>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-6 text-center hover-scale">
+                    <div class="bg-purple-100 text-purple-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-file-powerpoint text-2xl"></i>
+                    </div>
+                    <h3 class="font-semibold mb-2">Environmental Policy</h3>
+                    <p class="text-sm text-gray-600 mb-4">Presentation on new environmental regulations</p>
+                    <a href="#" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">Download PPT →</a>
+                </div>
+            </div>
+            <div class="text-center mt-8">
+                <a href="resources.html" class="inline-block bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-full font-medium transition duration-300 hover-scale">
+                    View all resources
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="py-12 bg-indigo-900 text-white">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row">
+                <div class="md:w-1/2 mb-8 md:mb-0">
+                    <h2 class="text-3xl font-bold mb-4">Contact Us</h2>
+                    <p class="text-indigo-200 mb-6">Have questions or want to report news? Get in touch with our team.</p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="bg-indigo-700 p-3 rounded-lg mr-4">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Address</h4>
+                                <p class="text-indigo-200">123 News Street, Warsaw, Poland</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="bg-indigo-7 00 p-3 rounded-lg mr-4">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Phone</h4>
+                                <p class="text-indigo-200">+48 123 456 789</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="bg-indigo-700 p-3 rounded-lg mr-4">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold">Email</h4>
+                                <p class="text-indigo-200">contact@newsportal.com</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <h4 class="font-semibold mb-3">Follow Us</h4>
+                        <div class="flex space-x-4">
+                            <a href="#" class="bg-indigo-700 hover:bg-indigo-600 w-10 h-10 rounded-full flex items-center justify-center transition duration-300">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="#" class="bg-indigo-700 hover:bg-indigo-600 w-10 h-10 rounded-full flex items-center justify-center transition duration-300">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="#" class="bg-indigo-700 hover:bg-indigo-600 w-10 h-10 rounded-full flex items-center justify-center transition duration-300">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="#" class="bg-indigo-700 hover:bg-indigo-600 w-10 h-10 rounded-full flex items-center justify-center transition duration-300">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="#" class="bg-indigo-700 hover:bg-indigo-600 w-10 h-10 rounded-full flex items-center justify-center transition duration-300">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="md:w-1/2 md:pl-8">
+                    <form class="bg-white bg-opacity-10 rounded-xl p-6 backdrop-filter backdrop-blur-sm">
+                        <div class="mb-4">
+                            <label for="name" class="block text-sm font-medium mb-1">Name</label>
+                            <input type="text" id="name" class="w-full px-3 py-2 bg-white bg-opacity-10 border border-white border-opacity-20 rounded focus:outline-none focus:ring-1 focus:ring-white">
+                        </div>
+                        <div class="mb-4">
+                            <label for="email" class="block text-sm font-medium mb-1">Email</label>
+                            <input type="email" id="email" class="w-full px-3 py-2 bg-white bg-opacity-10 border border-white border-opacity-20 rounded focus:outline-none focus:ring-1 focus:ring-white">
+                        </div>
+                        <div class="mb-4">
+                            <label for="subject" class="block text-sm font-medium mb-1">Subject</label>
+                            <input type="text" id="subject" class="w-full px-3 py-2 bg-white bg-opacity-10 border border-white border-opacity-20 rounded focus:outline-none focus:ring-1 focus:ring-white">
+                        </div>
+                        <div class="mb-4">
+                            <label for="message" class="block text-sm font-medium mb-1">Message</label>
+                            <textarea id="message" rows="4" class="w-full px-3 py-2 bg-white bg-opacity-10 border border-white border-opacity-20 rounded focus:outline-none focus:ring-1 focus:ring-white"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-white text-indigo-900 hover:bg-indigo-100 py-2 px-4 rounded font-medium transition duration-300">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-indigo-950 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <h3 class="font-bold text-lg mb-4">NewsPortal</h3>
+                    <p class="text-indigo-300 text-sm">Your trusted source for the latest news and in-depth analysis from around the world.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-4">Categories</h3>
+                    <ul class="space-y-2 text-sm text-indigo-300">
+                        <li><a href="world-politics.html" class="hover:text-white">World Politics</a></li>
+                        <li><a href="world-economy.html" class="hover:text-white">World Economy</a></li>
+                        <li><a href="world-science.html" class="hover:text-white">Science</a></li>
+                        <li><a href="world-health.html" class="hover:text-white">Health</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-4">Company</h3>
+                    <ul class="space-y-2 text-sm text-indigo-300">
+                        <li><a href="about.html" class="hover:text-white">About Us</a></li>
+                        <li><a href="careers.html" class="hover:text-white">Careers</a></li>
+                        <li><a href="advertise.html" class="hover:text-white">Advertise</a></li>
+                        <li><a href="privacy.html" class="hover:text-white">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-4">Subscribe</h3>
+                    <p class="text-indigo-300 text-sm mb-3">Get the latest news delivered to your inbox</p>
+                    <form class="flex">
+                        <input type="email" placeholder="Your email" class="px-3 py-2 text-gray-800 rounded-l focus:outline-none w-full">
+                        <button class="bg-indigo-600 hover:bg-indigo-700 px-4 rounded-r">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="pt-6 border-t border-indigo-800 text-sm text-indigo-400 text-center">
+                <p>© 2023 NewsPortal. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Current date and time
+        function updateDateTime() {
+            const now = new Date();
+            
+            // Format date
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', options);
+            
+            // Format time
+            let hours = now.getHours();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            const minutes = now.getMinutes().toString().padStart(2, '0');
+            const seconds = now.getSeconds().toString().padStart(2, '0');
+            document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds} ${ampm}`;
+        }
+        
+        // Update every second
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+        
+        // Mobile menu toggle (would need additional HTML element)
+        // document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        //     document.getElementById('mobile-menu').classList.toggle('hidden');
+        // });
+    </script>
+<p style="border-radius: 8px; text-align: center; font-size: 12px; color: #fff; margin-top: 16px;position: fixed; left: 8px; bottom: 8px; z-index: 10; background: rgba(0, 0, 0, 0.8); padding: 4px 8px;">Made with <img src="https://enzostvs-deepsite.hf.space/logo.svg" alt="DeepSite Logo" style="width: 16px; height: 16px; vertical-align: middle;display:inline-block;margin-right:3px;filter:brightness(0) invert(1);"><a href="https://enzostvs-deepsite.hf.space" style="color: #fff;text-decoration: underline;" target="_blank" >DeepSite</a> - 🧬 <a href="https://enzostvs-deepsite.hf.space?remix=ad3wa444/1a" style="color: #fff;text-decoration: underline;" target="_blank" >Remix</a></p></body>
+</html>
