@@ -26,6 +26,12 @@ _A feature-rich, responsive HTML-based news website template showcasing world an
 
 **NewsPortal** is a responsive HTML-based news website template designed to showcase a wide array of content, including world and national news, in-depth articles, blogs, videos, and photo galleries. Built primarily with **Tailwind CSS** for a utility-first styling approach, it features a modern layout that adapts seamlessly across devices. Key elements include a dynamic hero section, a breaking news ticker, a weather widget, a newsletter subscription form, and an interactive poll. The site is enhanced with **Font Awesome** icons, animations from **Animate.css**, and JavaScript for dynamic updates like a real-time date/time display. All external resources (CSS frameworks, fonts, icons, images) are loaded via CDNs or external URLs.
 
+<br><br>
+<p align="center">
+  <img src="screenshots/1.gif" width="85%">
+</p>
+
+
 ## ✨ Key Features
 
 *   📱 **Fully Responsive Layout**: Leverages **Tailwind CSS** grid, flexbox, and responsive utility classes to ensure optimal viewing experience on desktops, tablets, and mobile phones.
@@ -58,9 +64,17 @@ _A feature-rich, responsive HTML-based news website template showcasing world an
 
 ## 🖼️ Screenshots (Conceptual)
 
-**Coming soon!**
+_Screenshots of: the NewsPortal homepage highlighting the hero section, breaking news ticker, content sections, sidebar elements (weather, poll), and how the responsive design adapts to smaller screens._
 
-_This section would ideally show screenshots of: the NewsPortal homepage highlighting the hero section, breaking news ticker, content sections, sidebar elements (weather, poll), and how the responsive design adapts to smaller screens._
+<p align="center">
+  <img src="screenshots\1.jpg" width="300"/>
+  <img src="screenshots\2.jpg" width="300"/>
+  <img src="screenshots\3.jpg" width="300"/>
+  <img src="screenshots\4.jpg" width="300"/>
+  <img src="screenshots\5.jpg" width="300"/>
+  <img src="screenshots\6.jpg" width="300"/>
+</p>
+
 
 ## 🛠️ Technical Stack & Requirements
 
