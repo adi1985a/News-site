@@ -30,7 +30,7 @@ _A feature-rich, responsive HTML-based news website template showcasing world an
 <p align="center">
   <img src="screenshots/1.gif" width="85%">
 </p>
-
+<br><br>
 
 ## ✨ Key Features
 
